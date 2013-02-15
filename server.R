@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
     )
     
     result <- solver(
-      y     = userState
+        y     = userState
       , times = seq(time["start"], input$time.end, by = abs(input$time.end - time["start"]) / 100)
       , func  = model
       , parms = userParameters
