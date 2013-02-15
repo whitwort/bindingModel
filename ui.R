@@ -40,7 +40,7 @@ inputs <- c(
 shinyUI(pageWithSidebar(
   
   # Application title
-  headerPanel("Bimolecular Binding Model"),
+  headerPanel(headerText),
   
   # Sidebar with a slider input for state and parameter variables
   splat(sidebarPanel)(inputs),
@@ -51,7 +51,7 @@ shinyUI(pageWithSidebar(
     verbatimTextOutput("summary"),
     
     # Source code reference
-    HTML(markdownToHTML(text = "[Source code](https://github.com/whitwort/bindingModel) available on github.", fragment.only = TRUE))
+    HTML(markdownToHTML(text = footerText, fragment.only = TRUE))
   )
   
 ))

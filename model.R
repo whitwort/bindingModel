@@ -43,6 +43,10 @@ model <- function(t, state, parameters) {
 # define the solver that we want to use
 solver <- ode
 
+# Page elements describing this model
+headerText  <- "Bimolecular Binding Model"
+footerText  <- "[Source code](https://github.com/whitwort/bindingModel) available on github."
+
 # Little dev function to run the model in an interactive session (not run by the server)
 runModel <- function() {
   result <- solver(  
