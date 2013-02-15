@@ -9,7 +9,7 @@ parameters <- c(
 
 # Initial values of state variables (represent concentrations)
 state <- c(
-  A   = 0.001
+    A   = 0.001
   , B   = 0.01
   , AB  = 0
 )
