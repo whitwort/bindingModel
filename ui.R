@@ -1,5 +1,6 @@
 library(shiny)
 library(plyr)
+library(markdown)
 
 # Load the model and build the input UI from it at load time
 source("model.R")
@@ -47,6 +48,10 @@ shinyUI(pageWithSidebar(
   # Output panel
   mainPanel(
     plotOutput("modelPlot"),
-    verbatimTextOutput("summary")
+    verbatimTextOutput("summary"),
+    
+    # Source code reference
+    HTML(markdownToHTML(text = "[Source code](https://github.com/whitwort/bindingModel) available on github.", fragment.only = TRUE))
   )
+  
 ))
