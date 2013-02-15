@@ -1,7 +1,9 @@
 bindingModel
 ============
 
-Shiny application providing fun visualizations for a bimolecular binding interaction.
+Shiny application using an ODE solver ([deSolve](http://cran.r-project.org/web/packages/deSolve/index.html)) to run a bimolecular binding simulation.
+
+A quick tutorial for rna.wlu.edu users that walks through how you can fork and hack this simulation can be found [on the wiki](https://github.com/whitwort/bindingModel/wiki/Tutorial-for-rna.wlu.edu-users).
 
 ## Version
 
