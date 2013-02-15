@@ -2,7 +2,7 @@ library(shiny)
 library(ggplot2)
 library(reshape)
 
-# Load the model and bind it's variables for runModel below
+# Load the model and bind its variables for runModel below
 source("model.R")
 
 # Define server logic required to generate the plot
