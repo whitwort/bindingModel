@@ -3,7 +3,7 @@ library(deSolve)
 
 # Kinetic parameters
 parameters <- c(
-    kon   = 100
+    kon   = 1000
   , koff  = 10
   )
 
