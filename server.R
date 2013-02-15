@@ -8,7 +8,7 @@ source("model.R")
 # Define server logic required to generate the plot
 shinyServer(function(input, output) {
   
-  # Run the model using the function created at load time above
+  # Run the model in a reactive function
   modelResult <- reactive(function() {
     
     userState <- vapply(names(state), 
