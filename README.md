@@ -3,6 +3,9 @@ bindingModel
 
 Shiny application providing fun visualizations for a bimolecular binding interaction.
 
+## Version
+
+0.1
 
 ## License
 
