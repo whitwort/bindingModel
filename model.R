@@ -25,7 +25,7 @@ time <- c(
 model <- function(t, state, parameters) {
   
   # We'll bind state and parameter variables to clean up our model code block
-  with(as.list(c(state,parameters)), {
+  with(as.list(c(state, parameters)), {
     
     # This function returns an ordered list of rate of change calculations:
     # the order should match that of the state vector

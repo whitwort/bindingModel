@@ -17,7 +17,7 @@ shinyServer(function(input, output) {
     )
     
     userParameters <- vapply(names(parameters),
-                             function(name) {input[[name]]},
+                             function(name) { input[[name]] },
                              FUN.VALUE = numeric(1)
     )
     
@@ -35,7 +35,7 @@ shinyServer(function(input, output) {
     
     p <- ggplot(melt(modelResult(), id = "time"))           +
           geom_line( aes(time, value, colour = variable) )  +
-          ylab("[variable]") +
+          ylab("[variable]")                                +
           ylim(0, input$ymax)
     
     print(p)
