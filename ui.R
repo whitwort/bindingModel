@@ -36,7 +36,7 @@ inputs <- c(
   )
 
 
-# Define UI for application that plots random distributions 
+# Define UI layout for the application
 shinyUI(pageWithSidebar(
   
   # Application title
