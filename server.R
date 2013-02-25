@@ -2,14 +2,17 @@ library(shiny)
 library(ggplot2)
 library(reshape)
 
-# Load the model and bind its variables for runModel below
-source("model.R")
+# Load model into the local environment
+source("model.R", local = TRUE)
 
 # Define server logic required to generate the plot
 shinyServer(function(input, output) {
   
-  # Run the model in a reactive function
-  modelResult <- reactive(function() {
+  # Per-session variable that holds summary data
+  summaryData <- data.frame()
+  
+  # Run the model in a reactive expression
+  modelResult <- reactive({
     
     userState <- vapply(names(state), 
                         function(name) { input[[name]] },
@@ -28,10 +31,21 @@ shinyServer(function(input, output) {
       , parms = userParameters
     )
     
+    # Update the summary data
+    
+    
     return(data.frame(result))
   })
   
-  output$modelPlot <- reactivePlot(function() {
+  # Should be called when the tracked summary variables changes
+  clearSummary <- reactive({
+    variables         <- list(NULL, NULL)
+    names(variables)  <- c(input$summaryX, input$summaryY)
+    summaryData       <- splat(data.frame)(variables)
+  })
+  
+  # Simulation plot
+  output$modelPlot <- renderPlot({
     
     p <- ggplot(melt(modelResult(), id = "time"))           +
           geom_line( aes(time, value, colour = variable) )  +
@@ -41,9 +55,14 @@ shinyServer(function(input, output) {
     print(p)
   })
   
-  output$summary <- reactivePrint(function() {
-    d <- modelResult()
-    summary(d)
-  })
+  # Summary download link
+  output$downloadSummaryData <- downloadHandler(
+    filename = function() {
+      paste('data-', Sys.Date(), '.csv', sep='')
+    },
+    content = function(con) {
+      write.csv(summaryData, con)
+    }
+  )
   
 })

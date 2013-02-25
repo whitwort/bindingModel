@@ -2,39 +2,44 @@ library(shiny)
 library(plyr)
 library(markdown)
 
-# Load the model and build the input UI from it at load time
-source("model.R")
-inputs <- c(
+# Load model into the local environment
+source("model.R", local = TRUE)
+
+# Build an input UI from the model
+modelInputs <- list(
   
+    # Sidebar header text
+    helpText(HTML(markdownToHTML(text = sidebarHeader, fragment.only = TRUE))),
+    
     # state input boxes
     lapply(names(state),
            function(name) { 
-             numericInput(name, paste("Initial [", name, "]:", sep = ""), state[name]) 
+             numericInput(name, paste("Initial [", name, "]:", sep = ""), state[name])
            }
       ),
     
     # parameter input boxes
     lapply(names(parameters),
            function(name) { 
-             numericInput(name, paste("Rate of ", name, ":", sep = ""), parameters[name]) 
+             numericInput(name, paste("Rate of ", name, ":", sep = ""), parameters[name])
            }
       ),
     
-    # scale adjustments
-    sliderInput("ymax", 
-                "Y-axis scale:", 
-                min = 0,
-                max = max(state), 
-                value = 0.1 * max(state)),
-    
+    # Time scale adjustment
     sliderInput("time.end", 
                 "Time scale:",
                 min = 0,
                 max = time["end"] * 10,
                 value = time["end"],
-                step = time["end"] * 0.1)
+                step = time["end"] * 0.1),
+    
+    # Save to summary button    
+    br(),
+    
+    # Sidebar footer text
+    helpText(HTML(markdownToHTML(text = sidebarFooter, fragment.only = TRUE)))
+    
   )
-
 
 # Define UI layout for the application
 shinyUI(pageWithSidebar(
@@ -43,15 +48,30 @@ shinyUI(pageWithSidebar(
   headerPanel(headerText),
   
   # Sidebar with a slider input for state and parameter variables
-  splat(sidebarPanel)(inputs),
+  splat(sidebarPanel)(modelInputs),
   
   # Output panel
   mainPanel(
-    plotOutput("modelPlot"),
-    verbatimTextOutput("summary"),
     
-    # Source code reference
-    HTML(markdownToHTML(text = footerText, fragment.only = TRUE))
+    tabsetPanel(
+      tabPanel("Simulation",
+               plotOutput("modelPlot"),
+               sliderInput("ymax", 
+                           "Y-axis scale:", 
+                           min = 0,
+                           max = max(state), 
+                           value = 0.1 * max(state))
+               ),
+      tabPanel("Summary",
+               helpText("Choose values to summarize below and results from new runs of the simulation will show up automatically.  Selecting new options will reset the data on this panel."),
+               selectInput("summaryY", "Summarize:", 
+                           choices = names(state.summary)),
+               selectInput("summaryX", "As a function of:",
+                           choices = c(names(state), names(parameters)) ),
+               plotOutput("summary"),
+               downloadLink('downloadSummaryData', 'Download Data')
+               )
+      )
   )
   
 ))
