@@ -57,11 +57,12 @@ model <- function(t, state, parameters) {
 # the summary tab.  Functions should take one argument, the results data.frame,
 # with a $time variable and named variables for all of the model states.
 state.summary <- c(
-    "minimum(A)"        = function(r) { min(r$A) }
-  , "minimum(B)"        = function(r) { min(r$B) }
-  , "maximum(AB)"       = function(r) { max(r$AB) }
-  , "max(AB) / min(A)"  = function(r) { max(r$AB) / min(r$A) }
-  , "max(AB) / min(B)"  = function(r) { max(r$AB) / min(r$B) }
+    "min(A)"        = function(r) { min(r$A) }
+  , "min(B)"        = function(r) { min(r$B) }
+  , "min(AB)"       = function(r) { min(r$AB) }
+  , "max(A)"        = function(r) { max(r$A) }
+  , "max(B)"        = function(r) { max(r$A) }
+  , "max(AB)"       = function(r) { max(r$AB) }
   )
 
 # Label formatters
