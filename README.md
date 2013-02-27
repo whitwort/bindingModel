@@ -10,8 +10,8 @@ A quick tutorial for rna.wlu.edu users that walks through how you can fork and h
 
 ## Version
 
-0.2   Added a model summary feature
-0.1   Intial release
+* 0.2   Added a model summary feature
+* 0.1   Intial release
 
 
 ## License
