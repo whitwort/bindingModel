@@ -9,69 +9,93 @@ source("model.R", local = TRUE)
 modelInputs <- list(
   
     # Sidebar header text
-    helpText(HTML(markdownToHTML(text = sidebarHeader, fragment.only = TRUE))),
+    helpText(HTML(markdownToHTML(text = sidebarHeader, fragment.only = TRUE)))
     
     # state input boxes
-    lapply(names(state),
-           function(name) { 
-             numericInput(name, paste("Initial [", name, "]:", sep = ""), state[name])
-           }
-      ),
+  , lapply( names(state)
+          , function(name) { 
+              numericInput( name
+                          , stateFormat(name)
+                          , state[name]
+                          , step = state[name] / 2
+                          )
+          })
     
     # parameter input boxes
-    lapply(names(parameters),
-           function(name) { 
-             numericInput(name, paste("Rate of ", name, ":", sep = ""), parameters[name])
-           }
-      ),
+  , lapply( names(parameters)
+          , function(name) { 
+              numericInput( name
+                          , parameterFormat(name)
+                          , parameters[name]
+                          , step = parameters[name] / 2
+                          )
+          })
     
     # Time scale adjustment
-    sliderInput("time.end", 
-                "Time scale:",
-                min = 0,
-                max = time["end"] * 10,
-                value = time["end"],
-                step = time["end"] * 0.1),
+  , sliderInput( "time.end" 
+               , "Time scale"
+               , min = 0
+               , max = time["end"] * 10
+               , value = time["end"]
+               , step = time["end"] * 0.1
+               )
     
     # Save to summary button    
-    br(),
+  , br()
     
     # Sidebar footer text
-    helpText(HTML(markdownToHTML(text = sidebarFooter, fragment.only = TRUE)))
+  , helpText(HTML(markdownToHTML(text = sidebarFooter, fragment.only = TRUE)))
     
   )
 
 # Define UI layout for the application
 shinyUI(pageWithSidebar(
   
-  # Application title
-  headerPanel(headerText),
+    # Application title
+    headerPanel(headerText)
   
-  # Sidebar with a slider input for state and parameter variables
-  splat(sidebarPanel)(modelInputs),
+    # Sidebar with a slider input for state and parameter variables
+  , splat(sidebarPanel)(modelInputs)
   
-  # Output panel
-  mainPanel(
+    # Output panel
+  , mainPanel(
     
     tabsetPanel(
-      tabPanel("Simulation",
-               plotOutput("modelPlot"),
-               sliderInput("ymax", 
-                           "Y-axis scale:", 
-                           min = 0,
-                           max = max(state), 
-                           value = 0.1 * max(state))
-               ),
-      tabPanel("Summary",
-               helpText("Choose values to summarize below and results from new runs of the simulation will show up automatically.  Selecting new options will reset the data on this panel."),
-               selectInput("summaryY", "Summarize:", 
-                           choices = names(state.summary)),
-               selectInput("summaryX", "As a function of:",
-                           choices = c(names(state), names(parameters)) ),
-               plotOutput("summary"),
-               downloadLink('downloadSummaryData', 'Download Data')
-               )
+      
+        tabPanel( "Simulation"
+                , plotOutput("modelPlot")
+                , sliderInput( "ymax"
+                             , "Y-axis scale:"
+                             , min = 0
+                             , max = max(state)
+                             , value = 0.1 * max(state)
+                             )
+                )
+      
+      , tabPanel( "Summary"
+                , helpText("Choose values to summarize from runs of the 
+                           simulation. Selecting new options will reset the 
+                           summary data.")
+                  
+                  # TODO implement a less ugly horizontal well 
+                , wellPanel( class = "well container-fluid form-horizontal"
+                           , div( class = "span6"
+                                , selectInput( "summaryY"
+                                             , "Summarize:"
+                                             , choices = names(state.summary)
+                                             )
+                                )
+                           , div( class = "span6"
+                                , selectInput("summaryX"
+                                             , "As a function of:"
+                                             , choices = c(names(state), names(parameters)) 
+                                             )
+                                )
+                           )
+                 
+                 , plotOutput('summaryPlot')
+                 , downloadLink('downloadSummaryData', 'Download Data')
+                 )
       )
-  )
-  
+    )
 ))

@@ -15,7 +15,8 @@ runModel <- function() {
   print(summary(result))
   plot(result)
   
-  return(data.frame(result))
+  #return(data.frame(result))
+  return(result)
 }
 
 r <- runModel()

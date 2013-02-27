@@ -5,18 +5,21 @@ library(deSolve)
 solver <- ode
 
 # Header element describing this model
-headerText  <- "Bimolecular Binding Model"
+headerText    <- "Bimolecular Binding Model"
+
+# Sidebar header with instructions.  (this is markdown code)
+sidebarHeader <- "The simulation will update as you change the input parameters below."
 
 # Footer with some extra text.  (this is markdown code)
-footerText  <- "[Source code](https://github.com/whitwort/bindingModel) available on github."
+sidebarFooter <- "[Source code](https://github.com/whitwort/bindingModel) available on github."
 
-# Kinetic parameters
+# Kinetic parameters; don't duplicate names with the state vector
 parameters <- c(
     kon   = 1000
   , koff  = 10
 )
 
-# Initial values of state variables (represent concentrations)
+# Initial values of state variables (represent concentrations); don't duplicate names with the parameters vector
 state <- c(
     A   = 0.001
   , B   = 0.01
@@ -50,38 +53,17 @@ model <- function(t, state, parameters) {
   
 }
 
-# Named vector of state variable reduce functions: signature is function(x) 
-# where x is a vector of state variable values along them model time points. If
-# this is NULL no summary tab is created.
+# Named vector of functions that are availabe as response variable choices on
+# the summary tab.  Functions should take one argument, the results data.frame,
+# with a $time variable and named variables for all of the model states.
 state.summary <- c(
-    minimum = min
-  , maximum = max
-  , average = mean
+    "minimum(A)"        = function(r) { min(r$A) }
+  , "minimum(B)"        = function(r) { min(r$B) }
+  , "maximum(AB)"       = function(r) { max(r$AB) }
+  , "max(AB) / min(A)"  = function(r) { max(r$AB) / min(r$A) }
+  , "max(AB) / min(B)"  = function(r) { max(r$AB) / min(r$B) }
   )
 
-# define the solver that we want to use
-solver <- ode
-
-# Header element describing this model
-headerText  <- "Bimolecular Binding Model"
-
-# Footer with some extra text.  (this is markdown code)
-footerText  <- "[Source code](https://github.com/whitwort/bindingModel) available on github."
-
-# Little development helper function to run the model in an interactive session 
-# (not used by the server).  To test your model, do `r <- runModel()`.
-runModel <- function() {
-  result <- solver(  
-      y     = state
-    , times = seq(time["start"], time["end"], by = time["step"])
-    , func  = model
-    , parms = parameters
-  )
-  
-  print(head(result))
-  print(tail(result))
-  print(summary(result))
-  plot(result)
-  
-  return(data.frame(result))
-}
+# Label formatters
+stateFormat     <- function(name) { paste("Initial [", name, "] (mM)", sep = "") }
+parameterFormat <- function(name) { paste("Rate of ", name, " (s-1)", sep = "") }
