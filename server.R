@@ -60,11 +60,20 @@ shinyServer(function(input, output) {
       
       newRow <- nrow(store$summaryData) + 1
       
-      # Capture result state/parameter variable
-      store$summaryData[newRow, input$summaryX] <- c(args$state, args$parameters)[input$summaryX]
+      # Capture each model initial state
+      for (state in names(args$state)) {
+        store$summaryData[newRow, stateFormat(state)] <- args$state[[state]]
+      }
       
-      # Capture summary result
-      store$summaryData[newRow, input$summaryY] <- state.summary[[input$summaryY]](result)
+      # Capture each model parameter
+      for (parameter in names(args$parameters)) {
+        store$summaryData[newRow, parameterFormat(parameter)] <- args$parameters[[parameter]]
+      }
+      
+      # Capture each summary calculation
+      for (summary in names(state.summary)) {
+        store$summaryData[newRow, summary] <- state.summary[[summary]](result)
+      }
       
     })
     
@@ -76,8 +85,8 @@ shinyServer(function(input, output) {
     summaryX <- input$summaryX
     summaryY <- input$summaryY
     
-    # Reset summary table; isolate to avoid recursion
-    isolate({ store$summaryData <- data.frame() })
+    # Reset summary table, capturing current model result as first row of data
+    isolate({ store$summaryData <- store$summaryData[nrow(store$summaryData),names(store$summaryData)] })
     
   })
   

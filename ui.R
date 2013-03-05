@@ -88,7 +88,7 @@ shinyUI(pageWithSidebar(
                            , div( class = "span6"
                                 , selectInput("summaryX"
                                              , "As a function of:"
-                                             , choices = c(names(state), names(parameters)) 
+                                             , choices = c(stateFormat(names(state)), parameterFormat(names(parameters)))
                                              )
                                 )
                            )
