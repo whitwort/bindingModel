@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyIncubator)
 library(plyr)
 library(markdown)
 
@@ -78,23 +79,26 @@ shinyUI(pageWithSidebar(
                            summary data.")
                   
                   # TODO implement a less ugly horizontal well 
-                , wellPanel( class = "well container-fluid form-horizontal"
-                           , div( class = "span6"
-                                , selectInput( "summaryY"
-                                             , "Summarize:"
-                                             , choices = names(state.summary)
-                                             )
+                , wellPanel( class = "well container-fluid"
+                           , div( class = "row-fluid"
+                                , div( class = "span5"
+                                       , selectInput( "summaryY"
+                                                      , "Summarize:"
+                                                      , choices = names(state.summary)
+                                       )
                                 )
-                           , div( class = "span6"
-                                , selectInput("summaryX"
-                                             , "As a function of:"
-                                             , choices = c(stateFormat(names(state)), parameterFormat(names(parameters)))
-                                             )
+                                , div( class = "span5"
+                                       , selectInput("summaryX"
+                                                     , "As a function of:"
+                                                     , choices = c(stateFormat(names(state)), parameterFormat(names(parameters)))
+                                       )
                                 )
+                            )
                            )
                  
                  , plotOutput('summaryPlot')
-                 , downloadLink('downloadSummaryData', 'Download Data')
+                 , actionButton("resetSummary", "Clear data")
+                 , downloadButton('downloadSummaryData', 'Download Data')
                  )
       )
     )

@@ -27,7 +27,7 @@ shinyServer(function(input, output) {
                            , FUN.VALUE = numeric(1)
                            )
         
-      ))  
+      ))
   })
   
   # Run the model in a reactive expression
@@ -82,8 +82,9 @@ shinyServer(function(input, output) {
   clearSummary <- observe({
     
     # Run when summary selection changes
-    summaryX <- input$summaryX
-    summaryY <- input$summaryY
+#     summaryX <- input$summaryX
+#     summaryY <- input$summaryY
+    resetNow <- input$resetSummary
     
     # Reset summary table, capturing current model result as first row of data
     isolate({ store$summaryData <- store$summaryData[nrow(store$summaryData),names(store$summaryData)] })
