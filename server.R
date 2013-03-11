@@ -81,9 +81,7 @@ shinyServer(function(input, output) {
   
   clearSummary <- observe({
     
-    # Run when summary selection changes
-#     summaryX <- input$summaryX
-#     summaryY <- input$summaryY
+    # Run when reset button is pushed
     resetNow <- input$resetSummary
     
     # Reset summary table, capturing current model result as first row of data

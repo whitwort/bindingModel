@@ -62,7 +62,7 @@ shinyUI(pageWithSidebar(
   , mainPanel(
     
     tabsetPanel(
-      
+        
         tabPanel( "Simulation"
                 , plotOutput("modelPlot")
                 , sliderInput( "ymax"
@@ -74,9 +74,6 @@ shinyUI(pageWithSidebar(
                 )
       
       , tabPanel( "Summary"
-                , helpText("Choose values to summarize from runs of the 
-                           simulation. Selecting new options will reset the 
-                           summary data.")
                   
                   # TODO implement a less ugly horizontal well 
                 , wellPanel( class = "well container-fluid"
@@ -90,7 +87,9 @@ shinyUI(pageWithSidebar(
                                 , div( class = "span5"
                                        , selectInput("summaryX"
                                                      , "As a function of:"
-                                                     , choices = c(stateFormat(names(state)), parameterFormat(names(parameters)))
+                                                     , choices = c( stateFormat(names(state))
+                                                                  , parameterFormat(names(parameters))
+                                                                  )
                                        )
                                 )
                             )
