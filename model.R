@@ -5,10 +5,10 @@ library(deSolve)
 solver <- ode
 
 # Header element describing this model
-headerText    <- "Bimolecular Binding Model"
+headerText    <- "Binding Model"
 
 # Sidebar header with instructions.  (this is markdown code)
-sidebarHeader <- "The simulation will update as you change the input parameters below."
+sidebarHeader <- "The simulation will update as you change the parameters below.  The summary tab records results across multiple runs of the simulation."
 
 # Footer with some extra text.  (this is markdown code)
 sidebarFooter <- "Version 0.3.  [Source code](https://github.com/whitwort/bindingModel) available on github."
@@ -19,7 +19,7 @@ parameters <- c(
   , koff  = 10
 )
 
-# Initial values of state variables (represent concentrations); don't duplicate names with the parameters vector
+# Initial values of state variables; don't duplicate names with the parameters vector
 state <- c(
     A   = 0.001
   , B   = 0.01
@@ -57,12 +57,12 @@ model <- function(t, state, parameters) {
 # the summary tab.  Functions should take one argument, the results data.frame,
 # with a $time variable and named variables for all of the model states.
 state.summary <- c(
-    "min(A)"        = function(r) { min(r$A) }
-  , "min(B)"        = function(r) { min(r$B) }
-  , "min(AB)"       = function(r) { min(r$AB) }
-  , "max(A)"        = function(r) { max(r$A) }
-  , "max(B)"        = function(r) { max(r$A) }
-  , "max(AB)"       = function(r) { max(r$AB) }
+    "min([A])"        = function(r) { min(r$A) }
+  , "min([B])"        = function(r) { min(r$B) }
+  , "min([AB])"       = function(r) { min(r$AB) }
+  , "max([A])"        = function(r) { max(r$A) }
+  , "max([B])"        = function(r) { max(r$A) }
+  , "max([AB])"       = function(r) { max(r$AB) }
   )
 
 # Label formatters

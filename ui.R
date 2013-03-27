@@ -24,7 +24,7 @@ modelInputs <- list(
     
     # parameter input boxes
   , lapply( names(parameters)
-          , function(name) { 
+          , function(name) {
               numericInput( name
                           , parameterFormat(name)
                           , parameters[name]
@@ -65,12 +65,14 @@ shinyUI(pageWithSidebar(
         
         tabPanel( "Simulation"
                 , plotOutput("modelPlot")
-                , sliderInput( "ymax"
+                , wellPanel(
+                  sliderInput( "ymax"
                              , "Y-axis scale:"
                              , min = 0
                              , max = max(state)
                              , value = 0.1 * max(state)
                              )
+                            )
                 )
       
       , tabPanel( "Summary"
