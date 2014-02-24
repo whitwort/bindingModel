@@ -1,4 +1,5 @@
 library(shiny)
+library(ggvis)
 library(plyr)
 library(markdown)
 
@@ -6,6 +7,9 @@ library(markdown)
 source("model.R", local = TRUE)
 
 # Build an input UI from the model
+stateNames <- names(state)
+names(stateNames) <- stateFormat(stateNames)
+
 modelInputs <- list(
   
     # Sidebar header text
@@ -31,18 +35,30 @@ modelInputs <- list(
                           )
           })
     
-    # Time scale adjustment
+  # Y-axis scaling
+#   , sliderInput( 'yMax'
+#                , 'Y-axis scale'
+#                , min = min(state)
+#                , max = max(state)
+#                , value = state[['A']]
+#                )
+  , selectInput( 'yScale'
+               , "Scale y-axis to"
+               , choices = stateNames
+               )
+  , br()
+  
+  # Time scale adjustment
   , sliderInput( "time.end" 
                , "Time scale"
-               , min = 0
-               , max = time["end"] * 10
+               , min = time["end"] * 0.1
+               , max = time["end"] * 5
                , value = time["end"]
                , step = time["end"] * 0.1
                )
-    
-    # Save to summary button    
+
   , br()
-    
+  
     # Sidebar footer text
   , helpText(HTML(markdownToHTML(text = sidebarFooter, fragment.only = TRUE)))
     
@@ -63,15 +79,8 @@ shinyUI(pageWithSidebar(
     tabsetPanel(
         
         tabPanel( "Simulation"
-                , plotOutput("modelPlot")
-                , wellPanel(
-                  sliderInput( "ymax"
-                             , "Y-axis scale:"
-                             , min = 0
-                             , max = max(state)
-                             , value = 0.1 * max(state)
-                             )
-                            )
+                , ggvis_output("modelPlot")
+                , uiOutput("modelPlotUI")
                 )
       
       , tabPanel( "Summary"
@@ -80,26 +89,28 @@ shinyUI(pageWithSidebar(
                 , wellPanel( class = "well container-fluid"
                            , div( class = "row-fluid"
                                 , div( class = "span5"
-                                       , selectInput( "summaryY"
-                                                      , "Summarize:"
-                                                      , choices = names(state.summary)
-                                       )
+                                     , selectInput( "summaryY"
+                                                  , "Summarize:"
+                                                  , choices = names(state.summary)
+                                                  )
                                 )
                                 , div( class = "span5"
-                                       , selectInput("summaryX"
-                                                     , "As a function of:"
-                                                     , choices = c( stateFormat(names(state))
-                                                                  , parameterFormat(names(parameters))
-                                                                  )
-                                       )
+                                     , selectInput("summaryX"
+                                                  , "As a function of:"
+                                                  , choices = c( stateFormat(names(state))
+                                                               , parameterFormat(names(parameters))
+                                                               )
+                                                  )
+                                     )
                                 )
-                            )
                            )
                  
-                 , plotOutput('summaryPlot')
+                 , ggvis_output('summaryPlot')
+                 , uiOutput('summaryPlotUI')
+#                  , plotOutput('summaryPlot')
                  , actionButton("resetSummary", "Clear data")
                  , downloadButton('downloadSummaryData', 'Download Data')
                  )
-      )
+       )
     )
 ))

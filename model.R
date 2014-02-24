@@ -8,10 +8,10 @@ solver <- ode
 headerText    <- "Binding Model"
 
 # Sidebar header with instructions.  (this is markdown code)
-sidebarHeader <- "The simulation will update as you change the parameters below.  The summary tab records results across multiple runs of the simulation."
+sidebarHeader <- " "
 
 # Footer with some extra text.  (this is markdown code)
-sidebarFooter <- "Version 0.3.  [Source code](https://github.com/whitwort/bindingModel) available on github."
+sidebarFooter <- "Version 0.4.  [Source code](https://github.com/whitwort/bindingModel) available on github."
 
 # Kinetic parameters; don't duplicate names with the state vector
 parameters <- c(

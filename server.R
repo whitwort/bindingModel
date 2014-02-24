@@ -1,13 +1,14 @@
 library(shiny)
 library(ggplot2)
+library(ggvis)
 library(reshape)
 
 # Load model into the local environment
 source("model.R", local = TRUE)
 
 # Define server logic required to generate the plot
-shinyServer(function(input, output) {
-  
+shinyServer(function(input, output, session) {
+
   #Session store is a reactive values ~list
   store              <- reactiveValues()
   store$summaryData  <- data.frame()
@@ -17,15 +18,15 @@ shinyServer(function(input, output) {
     
     # Bind initial state and parameter inputs    
     return(list( 
-        state = vapply( names(state)
-                      , function(name) { input[[name]] }
-                      , FUN.VALUE = numeric(1)
-                      )
+        state       = vapply( names(state)
+                            , function(name) { input[[name]] }
+                            , FUN.VALUE = numeric(1)
+                            )
         
-      , parameters = vapply( names(parameters)
-                           , function(name) { input[[name]] }
-                           , FUN.VALUE = numeric(1)
-                           )
+      , parameters  = vapply( names(parameters)
+                            , function(name) { input[[name]] }
+                            , FUN.VALUE = numeric(1)
+                            )
         
       ))
   })
@@ -36,20 +37,22 @@ shinyServer(function(input, output) {
     args <- runArgs()
     
     # Run the simulation; convert result to a data.frame    
-    result <- data.frame(solver(
+    data.frame(solver(
         y     = args$state
-      , times = seq(time["start"], input$time.end, by = abs(input$time.end - time["start"]) / 100)
+      , times = seq( time["start"]
+                   , input$time.end
+                   , by = abs(input$time.end - time["start"]) / 100
+                   )
       , func  = model
       , parms = args$parameters
     ))
     
-    return(result)
-    
   })
   
   # Observers: these are run agressively
-  updateSummary <- observe({
-    
+#  updateSummary <- observe({
+  updateSummary <- observe({    
+
     # Update with run updates
     args    <- runArgs()
     result  <- runModel()
@@ -76,7 +79,7 @@ shinyServer(function(input, output) {
       }
       
     })
-    
+
   })
   
   clearSummary <- observe({
@@ -85,38 +88,65 @@ shinyServer(function(input, output) {
     resetNow <- input$resetSummary
     
     # Reset summary table, capturing current model result as first row of data
-    isolate({ store$summaryData <- store$summaryData[nrow(store$summaryData),names(store$summaryData)] })
+    isolate({ 
+      store$summaryData <- store$summaryData[nrow(store$summaryData),names(store$summaryData)]
+    })
     
   })
   
   # Simulation plot
-  output$modelPlot <- renderPlot({
+  modelTable  <- reactive({ melt(runModel(), id = "time") })
+  modelPlot   <- reactive({
     
-    p <- ggplot(melt(runModel(), id = "time"))              +
-          geom_line( aes(time, value, colour = variable) )  +
-          ylab("[variable]")                                +
-          ylim(0, input$ymax)
+#     p <- ggplot(              +
+#           geom_line( aes(time, value, colour = variable) )  +
+#           ylab("[variable]")                                +
+#           ylim(0, input$ymax)
+#     
+#     print(p)
     
-    print(p)
+    ggvis( modelTable
+         , props(x = ~time, y = ~value, fill = ~variable)
+         ) + mark_point() + 
+         dscale( "y"
+               , "numeric"
+               , domain  = c(0, state[[input$yScale]])
+               , nice = FALSE
+               , clamp = TRUE
+               )
     
   })
-  
+  observe_ggvis(modelPlot, 'modelPlot', session)
+  output$modelPlotUI <- renderControls(modelPlot, session)
+
   # Summary plot
-  output$summaryPlot <- renderPlot({
+  summaryTable <- reactive({
+    data.frame( x = store$summaryData[[input$summaryX]]
+              , y = store$summaryData[[input$summaryY]]
+              )
+  })
+#  output$summaryPlot <- renderPlot({
+  summaryPlot <- reactive({
     
-    p <- ggplot( data.frame( x = store$summaryData[[input$summaryX]]
-                           , y = store$summaryData[[input$summaryY]]
-                           )
-               , aes(x, y) 
-               )                        +
-          geom_point()                  +
-          geom_line( colour = "green" ) +
-          ylab(input$summaryY)          +
-          xlab(input$summaryX)
+#     p <- ggplot( data.frame( x = store$summaryData[[input$summaryX]]
+#                            , y = store$summaryData[[input$summaryY]]
+#                            )
+#                , aes(x, y) 
+#                )                        +
+#           geom_point()                  +
+#           geom_line( colour = "green" ) +
+#           ylab(input$summaryY)          +
+#           xlab(input$summaryX)
+#     
+#     print(p)
     
-    print(p)
+    ggvis( summaryTable()
+         , props (x = ~x, y = ~y)
+         ) + mark_point()
     
   })
+   observe_ggvis(summaryPlot, 'summaryPlot', session)
+   output$summaryPlotUI <- renderControls(summaryPlot, session)
   
   # Summary download link
   output$downloadSummaryData <- downloadHandler(
