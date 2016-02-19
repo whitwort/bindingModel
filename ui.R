@@ -19,7 +19,8 @@ modelInputs <- list(
                           , state[name]
                           , step = state[name] / 2
                           )
-          })
+              }
+          )
     
     # parameter input boxes
   , lapply( names(parameters)
@@ -29,12 +30,13 @@ modelInputs <- list(
                           , parameters[name]
                           , step = parameters[name] / 2
                           )
-          })
+              }
+          )
     
     # Time scale adjustment
   , sliderInput( "time.end" 
                , "Time scale"
-               , min = 0
+               , min = time["end"] * 0.1
                , max = time["end"] * 10
                , value = time["end"]
                , step = time["end"] * 0.1

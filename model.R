@@ -11,27 +11,24 @@ headerText    <- "Binding Model"
 sidebarHeader <- "The simulation will update as you change the parameters below.  The summary tab records results across multiple runs of the simulation."
 
 # Footer with some extra text.  (this is markdown code)
-sidebarFooter <- "Version 0.3.  [Source code](https://github.com/whitwort/bindingModel) available on github."
+sidebarFooter <- "Version 0.4.  [Source code](https://github.com/whitwort/bindingModel) available on github."
 
 # Kinetic parameters; don't duplicate names with the state vector
-parameters <- c(
-    kon   = 1000
-  , koff  = 10
-)
+parameters <- c( kon   = 1000
+               , koff  = 10
+               )
 
 # Initial values of state variables; don't duplicate names with the parameters vector
-state <- c(
-    A   = 0.001
-  , B   = 0.01
-  , AB  = 0
-)
+state <- c( A   = 0.001
+          , B   = 0.01
+          , AB  = 0
+          )
 
 # Time window and step size
-time <- c(
-    start = 0
-  , end   = 1
-  , step  = 0.01
-)
+time <- c( start = 0
+         , end   = 1 
+         , step  = 0.01
+         )
 
 # deSolve functional interface; t is the model time passed by the library
 model <- function(t, state, parameters) {
@@ -41,16 +38,13 @@ model <- function(t, state, parameters) {
     
     # This function returns an ordered list of rate of change calculations: the
     # order should match that of the state vector
-    return(list(c(
-      
-        dA  <- (koff * AB) - (kon * A * B)
-      , dB  <- (koff * AB) - (kon * A * B)
-      , dAB <- (kon * A * B) - (koff * AB)
-      
-    )))
-    
+    return(list(c( dA  <- (koff * AB)   - (kon * A * B)
+                 , dB  <- (koff * AB)   - (kon * A * B)
+                 , dAB <- (kon * A * B) - (koff * AB)
+                 )
+                )
+           )
   })
-  
 }
 
 # Named vector of functions that are availabe as response variable choices on
@@ -67,4 +61,4 @@ state.summary <- c(
 
 # Label formatters
 stateFormat     <- function(name) { paste("Initial [", name, "] (mM)", sep = "") }
-parameterFormat <- function(name) { paste("Rate of ", name, " (s-1)", sep = "") }
+parameterFormat <- function(name) { paste("Rate of ", name, " (s-1)",  sep = "") }
