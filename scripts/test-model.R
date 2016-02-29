@@ -17,6 +17,5 @@ runModel <- function() {
   
   #return(data.frame(result))
   return(result)
-}
 
 r <- runModel()

@@ -10,11 +10,12 @@ A quick tutorial for rna.wlu.edu users that walks through how you can fork and h
 
 ## Version
 
+* 0.5   Greatly improved parameter/state interpoliation (previously called the Summary tab, now the Simmulation tab)
+* 0.4   Fixed divide by zero bugs
 * 0.3   Improved model summary tab
 * 0.2   Added a model summary feature
 * 0.1   Intial release
 
-
 ## License
 
-Copyright © 2013 Gregg Whitworth and licensed under [LGPLv3](http://www.gnu.org/copyleft/lesser.html).
+Copyright © 2016 Gregg Whitworth and licensed under [GPLv2](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).

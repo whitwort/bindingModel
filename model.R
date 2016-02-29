@@ -8,7 +8,7 @@ solver <- ode
 headerText    <- "Binding Model"
 
 # Sidebar header with instructions.  (this is markdown code)
-sidebarHeader <- "The simulation will update as you change the parameters below.  The summary tab records results across multiple runs of the simulation."
+sidebarHeader <- "The simulation will update as you change the parameters below.  Use the 'Simulation' tab to iterate over a series of input parameters."
 
 # Footer with some extra text.  (this is markdown code)
 sidebarFooter <- "Version 0.4.  [Source code](https://github.com/whitwort/bindingModel) available on github."
@@ -42,7 +42,7 @@ model <- function(t, state, parameters) {
                  , dB  <- (koff * AB)   - (kon * A * B)
                  , dAB <- (kon * A * B) - (koff * AB)
                  )
-                )
+               )
            )
   })
 }
@@ -50,15 +50,17 @@ model <- function(t, state, parameters) {
 # Named vector of functions that are availabe as response variable choices on
 # the summary tab.  Functions should take one argument, the results data.frame,
 # with a $time variable and named variables for all of the model states.
-state.summary <- c(
-    "min([A])"        = function(r) { min(r$A) }
-  , "min([B])"        = function(r) { min(r$B) }
-  , "min([AB])"       = function(r) { min(r$AB) }
-  , "max([A])"        = function(r) { max(r$A) }
-  , "max([B])"        = function(r) { max(r$A) }
-  , "max([AB])"       = function(r) { max(r$AB) }
-  )
+state.summary <- c( "min([A])"  = function(r) { min(r$A)  }
+                  , "min([B])"  = function(r) { min(r$B)  }
+                  , "min([AB])" = function(r) { min(r$AB) }
+                  , "max([A])"  = function(r) { max(r$A)  }
+                  , "max([B])"  = function(r) { max(r$A)  }
+                  , "max([AB])" = function(r) { max(r$AB) }
+                  )
 
 # Label formatters
 stateFormat     <- function(name) { paste("Initial [", name, "] (mM)", sep = "") }
 parameterFormat <- function(name) { paste("Rate of ", name, " (s-1)",  sep = "") }
+
+simluationSteps <- 25
+simulationTime  <- 20000
