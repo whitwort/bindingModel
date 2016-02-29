@@ -11,7 +11,7 @@ headerText    <- "Binding Model"
 sidebarHeader <- "The simulation will update as you change the parameters below.  Use the 'Simulation' tab to iterate over a series of input parameters."
 
 # Footer with some extra text.  (this is markdown code)
-sidebarFooter <- "Version 0.4.  [Source code](https://github.com/whitwort/bindingModel) available on github."
+sidebarFooter <- "Version 0.5.  [Source code](https://github.com/whitwort/bindingModel) available on github."
 
 # Kinetic parameters; don't duplicate names with the state vector
 parameters <- c( kon   = 1000
